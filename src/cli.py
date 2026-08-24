@@ -1,9 +1,10 @@
 import argparse
-from unittest import result
 
-from src.checker import check_headers
 from src.http_client import HttpClientError
-from src.reports import results_to_json
+from src.reports import (
+    results_to_json,
+    create_html_report,
+)
 from src.scanner import scan
 from src.learning import format_learning
 
@@ -36,6 +37,12 @@ def build_parser() -> argparse.ArgumentParser:
     "--json",
     action="store_true",
     help="Output results as JSON.",
+)
+
+    parser.add_argument(
+    "--report",
+    choices=["html"],
+    help="Generate a report file.",
 )
 
     return parser
@@ -106,8 +113,34 @@ def main() -> int:
 
     if args.json:
         print(results_to_json(result))
+
+    elif args.report == "html":
+        filename = (
+            result["url"]
+            .replace("https://", "")
+            .replace("http://", "")
+            .replace("/", "-")
+        )
+
+        report_path = (
+            f"reports/{filename}-report.html"
+        )
+
+        with open(
+            report_path,
+            "w",
+            encoding="utf-8",
+        ) as file:
+            file.write(
+                create_html_report(result)
+            )
+
+        print(
+            f"HTML report created: {report_path}"
+        )
+
     else:
-         print_results(
+        print_results(
             result["url"],
             result["status_code"],
             results,
