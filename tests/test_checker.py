@@ -1,4 +1,4 @@
-from src.checker import check_header
+from src.checker import check_header, check_headers
 from src.policies import HEADER_POLICIES
 
 
@@ -99,3 +99,39 @@ def test_header_policies_include_core_headers():
     }
 
     assert expected_headers.issubset(policy_names)
+
+
+def test_check_headers_evaluates_all_supported_headers():
+    headers = {
+        "Strict-Transport-Security": "max-age=31536000",
+        "Content-Security-Policy": "default-src 'self'",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=()",
+        "X-Frame-Options": "SAMEORIGIN",
+    }
+
+    results = check_headers(headers)
+
+    assert len(results) == 6
+    assert results[0].status == "pass"
+    assert results[2].status == "pass"
+
+
+def test_check_headers_reports_missing_headers():
+    results = check_headers({})
+
+    assert len(results) == 6
+    assert all(result.status == "missing" for result in results)
+
+
+def test_check_headers_handles_mixed_case_header_names():
+    headers = {
+        "strict-transport-security": "max-age=31536000",
+        "X-CONTENT-TYPE-OPTIONS": "nosniff",
+    }
+
+    results = check_headers(headers)
+
+    assert results[0].status == "pass"
+    assert results[2].status == "pass"

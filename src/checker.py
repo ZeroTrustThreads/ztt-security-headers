@@ -1,3 +1,5 @@
+from collections.abc import Mapping
+
 from src.models import HeaderResult
 
 
@@ -5,9 +7,8 @@ def check_header(name: str, value: str | None) -> HeaderResult:
     """
     Evaluate a single HTTP security header.
 
-    The checker intentionally uses conservative findings.
-    A missing header is reported as 'missing', while a present
-    header may require additional review depending on the header.
+    Findings are intentionally conservative. A missing header is
+    reported as missing, while present headers may require review.
     """
 
     if value is None:
@@ -49,8 +50,8 @@ def check_header(name: str, value: str | None) -> HeaderResult:
             name=name,
             status="review",
             message=(
-                "Content-Security-Policy is present. "
-                "A complete CSP policy review is outside this tool's scope."
+                "Content-Security-Policy is present. A complete CSP "
+                "policy review is outside this tool's scope."
             ),
         )
 
@@ -59,8 +60,8 @@ def check_header(name: str, value: str | None) -> HeaderResult:
             name=name,
             status="review",
             message=(
-                "Referrer-Policy is present. "
-                "Review the selected policy against application requirements."
+                "Referrer-Policy is present. Review the selected "
+                "policy against application requirements."
             ),
         )
 
@@ -69,8 +70,8 @@ def check_header(name: str, value: str | None) -> HeaderResult:
             name=name,
             status="review",
             message=(
-                "Permissions-Policy is present. "
-                "Review enabled browser features against application needs."
+                "Permissions-Policy is present. Review enabled browser "
+                "features against application needs."
             ),
         )
 
@@ -79,9 +80,8 @@ def check_header(name: str, value: str | None) -> HeaderResult:
             name=name,
             status="review",
             message=(
-                "X-Frame-Options is present. "
-                "Consider the application's framing requirements and "
-                "CSP frame-ancestors."
+                "X-Frame-Options is present. Consider the application's "
+                "framing requirements and CSP frame-ancestors."
             ),
         )
 
@@ -90,3 +90,36 @@ def check_header(name: str, value: str | None) -> HeaderResult:
         status="info",
         message=f"{name} is present.",
     )
+
+
+def check_headers(
+    headers: Mapping[str, str],
+) -> list[HeaderResult]:
+    """
+    Evaluate all supported security headers.
+
+    Header names are matched case-insensitively because HTTP field
+    names are case-insensitive.
+    """
+
+    normalized_headers = {
+        name.lower(): value
+        for name, value in headers.items()
+    }
+
+    supported_headers = (
+        "Strict-Transport-Security",
+        "Content-Security-Policy",
+        "X-Content-Type-Options",
+        "Referrer-Policy",
+        "Permissions-Policy",
+        "X-Frame-Options",
+    )
+
+    return [
+        check_header(
+            name,
+            normalized_headers.get(name.lower()),
+        )
+        for name in supported_headers
+    ]
