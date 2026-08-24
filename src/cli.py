@@ -1,7 +1,8 @@
 import argparse
 
 from src.checker import check_headers
-from src.http_client import HttpClientError, fetch_headers
+from src.http_client import HttpClientError
+from src.scanner import scan
 from src.learning import format_learning
 
 
@@ -87,19 +88,20 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        response = fetch_headers(args.url)
+        result = scan(args.url)
+
     except HttpClientError as exc:
         print(f"Error: {exc}")
         return 1
 
-    results = check_headers(response.headers)
+    results = result["findings"]
 
     print_results(
-    response.url,
-    response.status_code,
-    results,
-    args.learn,
-)
+        result["url"],
+        result["status_code"],
+        results,
+        args.learn,
+    )
 
     return 0
 
