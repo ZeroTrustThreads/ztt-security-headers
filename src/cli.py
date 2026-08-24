@@ -1,7 +1,9 @@
 import argparse
+from unittest import result
 
 from src.checker import check_headers
 from src.http_client import HttpClientError
+from src.reports import results_to_json
 from src.scanner import scan
 from src.learning import format_learning
 
@@ -29,6 +31,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Show educational explanations for findings.",
     )
+
+    parser.add_argument(
+    "--json",
+    action="store_true",
+    help="Output results as JSON.",
+)
 
     return parser
 
@@ -96,12 +104,15 @@ def main() -> int:
 
     results = result["findings"]
 
-    print_results(
-        result["url"],
-        result["status_code"],
-        results,
-        args.learn,
-    )
+    if args.json:
+        print(results_to_json(result))
+    else:
+         print_results(
+            result["url"],
+            result["status_code"],
+            results,
+            args.learn,
+        )
 
     return 0
 
