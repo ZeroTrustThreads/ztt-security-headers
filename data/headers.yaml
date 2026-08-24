@@ -1,0 +1,49 @@
+Strict-Transport-Security:
+  title: Strict Transport Security (HSTS)
+  purpose: Forces browsers to use HTTPS connections.
+  security_benefit: Helps prevent downgrade attacks and cookie interception.
+  difficulty: beginner
+  references:
+    - OWASP Secure Headers
+    - MDN Web Docs
+
+Content-Security-Policy:
+  title: Content Security Policy (CSP)
+  purpose: Controls which resources a browser is allowed to load.
+  security_benefit: Helps reduce certain client-side attacks such as XSS.
+  difficulty: intermediate
+  references:
+    - OWASP Secure Headers
+    - MDN Web Docs
+
+X-Content-Type-Options:
+  title: X-Content-Type-Options
+  purpose: Prevents browsers from MIME sniffing responses.
+  security_benefit: Reduces certain content-type confusion attacks.
+  difficulty: beginner
+  references:
+    - OWASP Secure Headers
+
+Referrer-Policy:
+  title: Referrer Policy
+  purpose: Controls how much referrer information browsers send.
+  security_benefit: Helps reduce unnecessary information leakage.
+  difficulty: beginner
+  references:
+    - MDN Web Docs
+
+Permissions-Policy:
+  title: Permissions Policy
+  purpose: Controls browser features available to a webpage.
+  security_benefit: Limits unnecessary browser capabilities.
+  difficulty: intermediate
+  references:
+    - MDN Web Docs
+
+X-Frame-Options:
+  title: X-Frame-Options
+  purpose: Controls whether a page can be embedded in frames.
+  security_benefit: Helps reduce clickjacking risks.
+  difficulty: beginner
+  references:
+    - OWASP Secure Headers

@@ -2,6 +2,7 @@ import argparse
 
 from src.checker import check_headers
 from src.http_client import HttpClientError, fetch_headers
+from src.learning import format_learning
 
 
 STATUS_SYMBOLS = {
@@ -22,10 +23,21 @@ def build_parser() -> argparse.ArgumentParser:
         help="URL to assess.",
     )
 
+    parser.add_argument(
+        "--learn",
+        action="store_true",
+        help="Show educational explanations for findings.",
+    )
+
     return parser
 
 
-def print_results(url: str, status_code: int, results) -> None:
+def print_results(
+    url: str,
+    status_code: int,
+    results,
+    learn: bool = False,
+) -> None:
     print()
     print("ZERO TRUST THREADS")
     print("SECURITY HEADERS CHECKER")
@@ -42,6 +54,10 @@ def print_results(url: str, status_code: int, results) -> None:
         print(f"{symbol} {result.name}")
         print(f"  {result.message}")
         print()
+
+        if learn:
+            print(format_learning(result))
+            print()
 
     missing = sum(
         result.status == "missing"
@@ -79,10 +95,11 @@ def main() -> int:
     results = check_headers(response.headers)
 
     print_results(
-        response.url,
-        response.status_code,
-        results,
-    )
+    response.url,
+    response.status_code,
+    results,
+    args.learn,
+)
 
     return 0
 
