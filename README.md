@@ -625,3 +625,17 @@ The mission:
 **Learn. Build. Secure.**
 
 🛡️ Zero Trust Threads
+
+# 📜 License
+
+Copyright (c) 2026 Zero Trust Threads
+
+All rights reserved.
+
+This repository is provided for educational viewing and reference purposes.
+
+You may review this project to learn cybersecurity concepts and software development practices.
+
+You may not copy, modify, redistribute, sell, or create derivative works from this project without prior written permission from Zero Trust Threads.
+
+This project is not a professional security service and does not provide security guarantees.
